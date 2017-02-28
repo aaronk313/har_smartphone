@@ -26,7 +26,38 @@ with open(path+'train/X_train.txt') as f:
 X_train_raw = []
 
 for line in X_train_list:
-    X_train_raw.append(filter(None,line))
+    X_train_raw.append(map(float,filter(None,line)))
 
 X_train = pd.DataFrame(X_train_raw)
 
+X = X_train.values
+
+with open(path+'train/y_train.txt') as f:
+    reader = csv.reader(f,delimiter=" ")
+    y_train_list = list(reader)
+
+y_train = []
+
+for label in y_train_list:
+    y_train.append(map(int,label))
+
+y_t = np.array(y_train)
+
+y = np.squeeze(y_t[:,np.newaxis, np.newaxis])
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.cross_validation import cross_val_score
+from sklearn.metrics import confusion_matrix, classification_report
+
+lr = LogisticRegression()
+lr.fit(X,y)
+
+scores = cross_val_score(lr,X, y, scoring='accuracy', cv=10)
+
+print('INITIAL MODEL ACCURACY (NO Cross Validation: ', lr.score(X, y))
+print('CV 10-FOLD Scores: ', scores)
+print('CV 10-FOLD Mean Accuracy', scores.mean() )
+print('CV 10-FOLD Standard Deviation of Accuracy', scores.std() )
+
+
+# NEED TO DO - X-test/Y-test

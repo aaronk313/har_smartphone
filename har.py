@@ -52,12 +52,14 @@ from sklearn.metrics import confusion_matrix, classification_report
 lr = LogisticRegression()
 lr.fit(X,y)
 
-scores = cross_val_score(lr,X, y, scoring='accuracy', cv=10)
 
-print('INITIAL MODEL ACCURACY (NO Cross Validation: ', lr.score(X, y))
-print('CV 10-FOLD Scores: ', scores)
-print('CV 10-FOLD Mean Accuracy', scores.mean() )
-print('CV 10-FOLD Standard Deviation of Accuracy', scores.std() )
+def report(s_model,x_data,y_data):
+    scores = cross_val_score(s_model,x_data, y_data, scoring='accuracy', cv=10)
+    print('INITIAL MODEL ACCURACY (NO Cross Validation: ', s_model.score(x_data, y_data))
+    print('CV 10-FOLD Scores: ', scores)
+    print('CV 10-FOLD Mean Accuracy', scores.mean() )
+    print('CV 10-FOLD Standard Deviation of Accuracy', scores.std() )
 
+report(lr, X, y)
 
 # NEED TO DO - X-test/Y-test

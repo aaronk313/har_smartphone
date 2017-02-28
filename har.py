@@ -19,18 +19,21 @@ import csv
 
 path = '/extstore/FILECABINET/OneDrive/datascience/projects/har_smartphone/'
 
+
+LABELS = ["WALKING", "WALKING_UPSTAIRS", "WALKING_DOWNSTAIRS", "SITTING", "STANDING", "LAYING"]
+
+X_train_raw = []
+
 with open(path+'train/X_train.txt') as f:
     reader = csv.reader(f,delimiter=" ")
     X_train_list = list(reader)
-    
-X_train_raw = []
 
 for line in X_train_list:
     X_train_raw.append(map(float,filter(None,line)))
 
 X_train = pd.DataFrame(X_train_raw)
-
 X = X_train.values
+
 
 with open(path+'train/y_train.txt') as f:
     reader = csv.reader(f,delimiter=" ")
@@ -42,7 +45,6 @@ for label in y_train_list:
     y_train.append(map(int,label))
 
 y_t = np.array(y_train)
-
 y = np.squeeze(y_t[:,np.newaxis, np.newaxis])
 
 from sklearn.linear_model import LogisticRegression
@@ -51,7 +53,6 @@ from sklearn.metrics import confusion_matrix, classification_report
 
 lr = LogisticRegression()
 lr.fit(X,y)
-
 
 def report(s_model,x_data,y_data):
     scores = cross_val_score(s_model,x_data, y_data, scoring='accuracy', cv=10)
@@ -62,4 +63,42 @@ def report(s_model,x_data,y_data):
 
 report(lr, X, y)
 
-# NEED TO DO - X-test/Y-test
+
+X_test_raw = []
+
+with open(path+'test/X_test.txt') as f:
+    reader = csv.reader(f,delimiter=" ")
+    X_test_list = list(reader)
+
+for line in X_test_list:
+    X_test_raw.append(map(float,filter(None,line)))
+    
+X_test = pd.DataFrame(X_test_raw)
+Xt = X_test.values
+    
+    
+y_test = []
+
+with open(path+'test/y_test.txt') as f:
+    reader = csv.reader(f,delimiter=" ")
+    y_test_list = list(reader)
+
+for label in y_test_list:
+    y_test.append(map(int,label))
+
+y_tst = np.array(y_test)
+yt = np.squeeze(y_tst[:,np.newaxis, np.newaxis])
+    
+y_pred = lr.predict(Xt)
+
+from sklearn.metrics import precision_score, recall_score, accuracy_score
+
+print "Accuracy: ",accuracy_score(yt,y_pred)
+print "Precision: ", precision_score(yt,y_pred, average="weighted")
+print "Recall: ", recall_score(yt,y_pred, average="weighted")
+print "F1: ",f1_score(yt,y_pred, average="weighted")
+print confusion_matrix(yt, y_pred)
+
+
+
+sns.heatmap(confusion_matrix(yt, y_pred), yticklabels=LABELS, xticklabels=LABELS)

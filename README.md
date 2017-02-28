@@ -1,3 +1,5 @@
+##This is an exploration into human mobility pattern using the dataset from the UCI Machine Learning Database
+
 ===================================================================================================
 Human Activity Recognition Using Smartphones Dataset
 Version 1.0

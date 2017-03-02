@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import csv
 import sys
+import seaborn as sns
 from sklearn.linear_model import LogisticRegression
 from sklearn.cross_validation import cross_val_score
 from sklearn.metrics import confusion_matrix, classification_report
@@ -93,12 +94,48 @@ y_pred = lr.predict(Xt)
 
 from sklearn.metrics import precision_score, recall_score, accuracy_score, f1_score
 
+print "LOGISTIC REGRESSTION ========================"
 print "Accuracy: ",accuracy_score(yt,y_pred)
 print "Precision: ", precision_score(yt,y_pred, average="weighted")
 print "Recall: ", recall_score(yt,y_pred, average="weighted")
 print "F1: ",f1_score(yt,y_pred, average="weighted")
 print confusion_matrix(yt, y_pred)
+print "============================================="
 
 
-sns.heatmap(confusion_matrix(yt, y_pred), yticklabels=LABELS, xticklabels=LABELS)
+hmplog = plt.axes()
+sns.heatmap(confusion_matrix(yt, y_pred), yticklabels=LABELS, xticklabels=LABELS, ax=hmplog)
+hmplog.set_title('Logistic Regression')
+hmplog.show()
+
+
+
+# RandomForest 
+
+from sklearn.ensemble import RandomForestClassifier
+
+rfclf = RandomForestClassifier(n_estimators=20, max_depth=None, min_samples_split=2, random_state=0)
+rfclf.fit(X,y)
+
+yrf_pred = rfclf.predict(Xt)
+
+rf_scores_mean = cross_val_score(rfclf, X, y, cv=5).mean()
+rf_accuracy = accuracy_score(yt,yrf_pred)
+rf_prec = classification_report(yt, yrf_pred).split('total')[1].split('   ')[2].strip()
+rf_rec = classification_report(yt, yrf_pred).split('total')[1].split('   ')[4]
+    
+rf_Yall_score = rfclf.predict_proba(Xt)[:,1]
+
+print "RANDOM FOREST ========================"
+print "RT Accuracy: ",accuracy_score(yt,yrf_pred)
+print "RT Precision: ", precision_score(yt,yrf_pred, average="weighted")
+print "RT Recall: ", recall_score(yt,yrf_pred, average="weighted")
+print "RT F1: ",f1_score(yt,yrf_pred, average="weighted")
+print confusion_matrix(yt, yrf_pred)
+print "======================================"
+
+hmprt = plt.axes()
+sns.heatmap(confusion_matrix(yt, yrf_pred), yticklabels=LABELS, xticklabels=LABELS, ax=hmprt)
+hmprt.set_title('Random Forest')
+hmprt.show()
 

@@ -12,13 +12,18 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
-import sklearn as sk
-import seaborn as sns
 import numpy as np
 import csv
+import sys
+from sklearn.linear_model import LogisticRegression
+from sklearn.cross_validation import cross_val_score
+from sklearn.metrics import confusion_matrix, classification_report
 
-path = '/extstore/FILECABINET/OneDrive/datascience/projects/har_smartphone/'
 
+if sys.platform=='win32':
+    path = 'Z:\OneDrive\datascience\projects\har_smartphone\\'
+elif sys.platform=='darwin':
+    path = '/extstore/FILECABINET/OneDrive/datascience/projects/har_smartphone/'
 
 LABELS = ["WALKING", "WALKING_UPSTAIRS", "WALKING_DOWNSTAIRS", "SITTING", "STANDING", "LAYING"]
 
@@ -47,9 +52,6 @@ for label in y_train_list:
 y_t = np.array(y_train)
 y = np.squeeze(y_t[:,np.newaxis, np.newaxis])
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.cross_validation import cross_val_score
-from sklearn.metrics import confusion_matrix, classification_report
 
 lr = LogisticRegression()
 lr.fit(X,y)
@@ -75,8 +77,7 @@ for line in X_test_list:
     
 X_test = pd.DataFrame(X_test_raw)
 Xt = X_test.values
-    
-    
+
 y_test = []
 
 with open(path+'test/y_test.txt') as f:
@@ -88,10 +89,9 @@ for label in y_test_list:
 
 y_tst = np.array(y_test)
 yt = np.squeeze(y_tst[:,np.newaxis, np.newaxis])
-    
 y_pred = lr.predict(Xt)
 
-from sklearn.metrics import precision_score, recall_score, accuracy_score
+from sklearn.metrics import precision_score, recall_score, accuracy_score, f1_score
 
 print "Accuracy: ",accuracy_score(yt,y_pred)
 print "Precision: ", precision_score(yt,y_pred, average="weighted")
@@ -100,5 +100,5 @@ print "F1: ",f1_score(yt,y_pred, average="weighted")
 print confusion_matrix(yt, y_pred)
 
 
-
 sns.heatmap(confusion_matrix(yt, y_pred), yticklabels=LABELS, xticklabels=LABELS)
+

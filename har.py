@@ -106,7 +106,6 @@ print "============================================="
 hmplog = plt.axes()
 sns.heatmap(confusion_matrix(yt, y_pred), yticklabels=LABELS, xticklabels=LABELS, ax=hmplog)
 hmplog.set_title('Logistic Regression')
-hmplog.show()
 
 
 
@@ -137,5 +136,5 @@ print "======================================"
 hmprt = plt.axes()
 sns.heatmap(confusion_matrix(yt, yrf_pred), yticklabels=LABELS, xticklabels=LABELS, ax=hmprt)
 hmprt.set_title('Random Forest')
-hmprt.show()
+
 
